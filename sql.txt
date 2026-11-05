@@ -1,0 +1,9 @@
+CREATE TABLE composicion_fondos (
+    id INT PRIMARY KEY,
+    fondo VARCHAR(50) NOT NULL,
+    instrumento VARCHAR(200) NOT NULL,
+    bolsa_mercado VARCHAR(100),
+    tipo VARCHAR(50),
+    peso_en_fondo VARCHAR(20),       -- Guarda "48.0%" directamente
+    rentabilidad_ytd VARCHAR(20)      -- Guarda "-4.33%" directamente
+);
