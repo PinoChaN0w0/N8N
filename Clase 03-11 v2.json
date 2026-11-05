@@ -1,0 +1,301 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2a3323a9-2496-4fdb-a7b8-3e0f9170611c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "command": "python C:\\n8n\\robot.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "8d6acd6a-a1df-43ed-9ee7-77a259a52a28",
+      "name": "Execute Command"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "financial_quotes",
+          "mode": "list",
+          "cachedResultName": "financial_quotes"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "={{ $json.name }}",
+            "variacion7": "={{ $json.variacion }}",
+            "asset_type": "\"crypto\"",
+            "price": "={{ $json.price }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "asset_type",
+              "displayName": "asset_type",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "price",
+              "displayName": "price",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "variacion7",
+              "displayName": "variacion7",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "recorded_at",
+              "displayName": "recorded_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        704,
+        0
+      ],
+      "id": "eceeb2b3-90d2-4aa5-8291-92b586894ffc",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "hbpKjGOFIpinZJtw",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "C:\\n8n\\datos_crypto.csv",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1152,
+        0
+      ],
+      "id": "4e91cb60-27a8-477b-aa47-26812050b7d2",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "options": {
+          "delimiter": ";"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.2,
+      "position": [
+        928,
+        0
+      ],
+      "id": "46dafb70-ddad-4aca-8767-15c12c091660",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "jsCode": "var data = $input.first().json.stdout;\nvar salida= [];\nlet  i = 0;\nfor (const element of JSON.parse(data)) {\n  let variacion = element.variacion7;\n  variacion     = variacion.replace(\"%\", \"\");\n  let price     = element.price;\n  price         = price.replace(\"$\",\"\");\n  price         = price.replace(\",\", \"\");\n  i++;\n  if(i <= 3){\n    salida.push(\n     {\n       variacion : variacion,\n       price : price,\n       name  : element.name,\n       \n     }\n   );\n  }\n   \n  \n}\n\nreturn salida;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "26847a98-a068-4d09-aae3-2600b02bd4bd",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "jT5LTxPXIxDofgKo",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/jT5LTxPXIxDofgKo",
+          "cachedResultName": "My Sub-Workflow 1"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [
+            ""
+          ],
+          "schema": [
+            {
+              "id": "robot2",
+              "displayName": "robot2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.4,
+      "position": [
+        1376,
+        0
+      ],
+      "id": "1d9aaa29-c94e-47e9-900d-41d80bca0609",
+      "name": "Call 'My Sub-Workflow 1'"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Execute Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Call 'My Sub-Workflow 1'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "6ccea2e0-ee42-4f88-b4ce-f6cedee3ece9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1c441792f77dcdd96bfebda5a31b4dd3f715d0ab2768df1ad475ea914bcdd950"
+  },
+  "nodeGroups": [],
+  "id": "VJibQxJoqbgRhEcZ",
+  "tags": []
+}
